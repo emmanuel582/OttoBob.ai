@@ -62,10 +62,10 @@ export default function ActivityTimeline({ leadId }) {
         <div style={{
           textAlign: 'center',
           padding: '48px 24px',
-          color: 'var(--color-text-muted)',
+          color: '#6b6b7b',
         }}>
-          <IconClipboard size={40} style={{ color: 'var(--color-text-muted)', marginBottom: '12px', margin: '0 auto 12px' }} />
-          <div style={{ fontSize: '15px', fontWeight: 500, marginBottom: '4px', color: 'var(--color-text-secondary)' }}>
+          <IconClipboard size={32} style={{ color: '#4a4a58', marginBottom: '12px', margin: '0 auto 12px', display: 'block' }} />
+          <div style={{ fontSize: '14px', fontWeight: 500, marginBottom: '4px', color: '#a0a0b0' }}>
             No activity yet
           </div>
           <div style={{ fontSize: '13px' }}>
@@ -75,11 +75,11 @@ export default function ActivityTimeline({ leadId }) {
       ) : (
         <div>
           <div style={{
-            fontSize: '13px',
+            fontSize: '12px',
             fontWeight: 600,
-            color: 'var(--color-text-muted)',
+            color: '#a0a0b0',
             textTransform: 'uppercase',
-            letterSpacing: '0.05em',
+            letterSpacing: '0.04em',
             marginBottom: '16px',
           }}>
             Activity Timeline — {activities.length} entr{activities.length === 1 ? 'y' : 'ies'}

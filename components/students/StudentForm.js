@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/ui/Toast';
 import { STUDENT_STATUSES, STUDENT_SOURCES } from '@/lib/constants';
+import { IconUsers } from '@/components/ui/Icons';
 
-const emptyLead = {
+const emptyStudent = {
   full_name: '',
   major: '',
   email: '',
@@ -16,11 +17,11 @@ const emptyLead = {
   notes: '',
 };
 
-export default function LeadForm({ student, onSave, onCancel }) {
+export default function StudentForm({ student, onSave, onCancel }) {
   const [form, setForm] = useState(student ? {
     ...student,
     next_follow_up_date: student.next_follow_up_date || '',
-  } : emptyLead);
+  } : emptyStudent);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const toast = useToast();
@@ -80,7 +81,7 @@ export default function LeadForm({ student, onSave, onCancel }) {
 
         toast.success('Student updated successfully');
       } else {
-        const { data: newLead, error } = await supabase
+        const { data: newStudent, error } = await supabase
           .from('students')
           .insert(data)
           .select()
@@ -90,23 +91,23 @@ export default function LeadForm({ student, onSave, onCancel }) {
 
         // Log student creation
         await supabase.from('activity_logs').insert({
-          student_id: newLead.id,
+          student_id: newStudent.id,
           source: 'system',
           author: 'System',
-          content: `Student created — ${newLead.full_name}${newLead.major ? ` at ${newLead.major}` : ''}`,
+          content: `Student enrolled — ${newStudent.full_name}${newStudent.major ? ` at ${newStudent.major}` : ''}`,
         });
 
         // Log automatic welcome email
-        if (newLead.email) {
+        if (newStudent.email) {
           await supabase.from('activity_logs').insert({
-            student_id: newLead.id,
+            student_id: newStudent.id,
             source: 'system',
             author: 'Bob (AI)',
-            content: `Sent automatic welcome email to ${newLead.email}`,
+            content: `Sent automatic welcome email to ${newStudent.email}`,
           });
         }
 
-        toast.success('Student created successfully');
+        toast.success('Student enrolled successfully');
       }
 
       onSave?.();
@@ -125,49 +126,46 @@ export default function LeadForm({ student, onSave, onCancel }) {
     }
   }
 
-  const inputStyle = {
-    width: '100%',
-    padding: '10px 14px',
-    background: 'var(--color-bg-primary)',
-    border: '1px solid var(--color-border-subtle)',
-    borderRadius: '10px',
-    color: 'var(--color-text-primary)',
-    fontSize: '14px',
-    fontFamily: 'Inter, sans-serif',
-    transition: 'all 0.2s ease',
-    outline: 'none',
-  };
-
   const labelStyle = {
     display: 'block',
     fontSize: '13px',
     fontWeight: 500,
-    color: 'var(--color-text-secondary)',
+    color: '#a0a0b0',
     marginBottom: '6px',
   };
 
   const errorStyle = {
     fontSize: '12px',
-    color: 'var(--color-accent-red)',
+    color: '#fca5a5',
     marginTop: '4px',
   };
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Photo Upload Area (Dummy for now) */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+        <div className="photo-upload">
+          <IconUsers size={32} style={{ color: '#4a4a58' }} />
+        </div>
+        <div>
+          <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0f0f4', marginBottom: '4px' }}>Profile Photo</div>
+          <div style={{ fontSize: '12px', color: '#6b6b7b', marginBottom: '8px' }}>Recommended size: 256x256px</div>
+          <button type="button" className="btn btn-secondary btn-sm" disabled>
+            Upload Photo
+          </button>
+        </div>
+      </div>
+
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         {/* Full Name */}
         <div style={{ gridColumn: '1 / -1' }}>
           <label style={labelStyle}>Full Name *</label>
           <input
-            style={{
-              ...inputStyle,
-              borderColor: errors.full_name ? 'var(--color-accent-red)' : undefined,
-            }}
-            placeholder="e.g. Dr. Sarah Johnson"
+            style={{ borderColor: errors.full_name ? '#ef4444' : undefined }}
+            className="input-field"
+            placeholder="e.g. John Doe"
             value={form.full_name}
             onChange={e => handleChange('full_name', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = errors.full_name ? 'var(--color-accent-red)' : 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
           {errors.full_name && <div style={errorStyle}>{errors.full_name}</div>}
         </div>
@@ -176,12 +174,10 @@ export default function LeadForm({ student, onSave, onCancel }) {
         <div>
           <label style={labelStyle}>Major</label>
           <input
-            style={inputStyle}
-            placeholder="e.g. Pacific Dental"
+            className="input-field"
+            placeholder="e.g. Computer Science"
             value={form.major}
             onChange={e => handleChange('major', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
         </div>
 
@@ -190,15 +186,11 @@ export default function LeadForm({ student, onSave, onCancel }) {
           <label style={labelStyle}>Email</label>
           <input
             type="email"
-            style={{
-              ...inputStyle,
-              borderColor: errors.email ? 'var(--color-accent-red)' : undefined,
-            }}
-            placeholder="sarah@example.com"
+            style={{ borderColor: errors.email ? '#ef4444' : undefined }}
+            className="input-field"
+            placeholder="student@university.edu"
             value={form.email}
             onChange={e => handleChange('email', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = errors.email ? 'var(--color-accent-red)' : 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
           {errors.email && <div style={errorStyle}>{errors.email}</div>}
         </div>
@@ -208,24 +200,21 @@ export default function LeadForm({ student, onSave, onCancel }) {
           <label style={labelStyle}>Phone</label>
           <input
             type="tel"
-            style={inputStyle}
+            className="input-field"
             placeholder="(555) 123-4567"
             value={form.phone}
             onChange={e => handleChange('phone', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
         </div>
 
         {/* Source */}
         <div>
-          <label style={labelStyle}>Student Source</label>
+          <label style={labelStyle}>Enrollment Source</label>
           <select
-            style={{ ...inputStyle, cursor: 'pointer' }}
+            className="input-field"
+            style={{ cursor: 'pointer' }}
             value={form.source}
             onChange={e => handleChange('source', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           >
             <option value="">Select source</option>
             {STUDENT_SOURCES.map(s => (
@@ -238,11 +227,10 @@ export default function LeadForm({ student, onSave, onCancel }) {
         <div>
           <label style={labelStyle}>Status</label>
           <select
-            style={{ ...inputStyle, cursor: 'pointer' }}
+            className="input-field"
+            style={{ cursor: 'pointer' }}
             value={form.status}
             onChange={e => handleChange('status', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           >
             {STUDENT_STATUSES.map(s => (
               <option key={s.value} value={s.value}>{s.label}</option>
@@ -255,24 +243,21 @@ export default function LeadForm({ student, onSave, onCancel }) {
           <label style={labelStyle}>Next Follow-up Date</label>
           <input
             type="date"
-            style={inputStyle}
+            className="input-field"
             value={form.next_follow_up_date}
             onChange={e => handleChange('next_follow_up_date', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
         </div>
 
         {/* Notes */}
         <div style={{ gridColumn: '1 / -1' }}>
-          <label style={labelStyle}>Notes</label>
+          <label style={labelStyle}>Initial Notes</label>
           <textarea
-            style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }}
+            className="input-field"
+            style={{ minHeight: '80px', resize: 'vertical' }}
             placeholder="Any initial notes about this student..."
             value={form.notes}
             onChange={e => handleChange('notes', e.target.value)}
-            onFocus={e => { e.target.style.borderColor = 'var(--color-accent-blue)'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-            onBlur={e => { e.target.style.borderColor = 'var(--color-border-subtle)'; e.target.style.boxShadow = 'none'; }}
           />
         </div>
       </div>
@@ -284,38 +269,20 @@ export default function LeadForm({ student, onSave, onCancel }) {
         gap: '12px',
         marginTop: '24px',
         paddingTop: '20px',
-        borderTop: '1px solid var(--color-border-subtle)',
+        borderTop: '1px solid #1c1c24',
       }}>
         <button type="button" className="btn btn-secondary" onClick={onCancel}>
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
-          {saving ? (
-            <>
-              <span style={{
-                width: '16px',
-                height: '16px',
-                border: '2px solid rgba(255,255,255,0.3)',
-                borderTopColor: 'white',
-                borderRadius: '50%',
-                display: 'inline-block',
-                animation: 'spin 0.6s linear infinite',
-              }} />
-              Saving...
-            </>
-          ) : (
-            isEditing ? 'Update Student' : 'Create Student'
-          )}
+          {saving ? 'Saving...' : (isEditing ? 'Update Student' : 'Enroll Student')}
         </button>
       </div>
 
       <style jsx>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
         select option {
-          background: #111827;
-          color: #f1f5f9;
+          background: #111118;
+          color: #f0f0f4;
         }
       `}</style>
     </form>

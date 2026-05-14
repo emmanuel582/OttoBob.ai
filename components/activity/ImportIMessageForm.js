@@ -68,9 +68,9 @@ export default function ImportIMessageForm({ leadId, onImported }) {
 
   return (
     <div style={{
-      background: 'var(--color-bg-secondary)',
-      border: '1px solid rgba(59, 130, 246, 0.2)',
-      borderRadius: '12px',
+      background: '#111118',
+      border: '1px solid #1c1c24',
+      borderRadius: '8px',
       padding: '16px',
       marginBottom: '24px',
     }}>
@@ -81,13 +81,15 @@ export default function ImportIMessageForm({ leadId, onImported }) {
         marginBottom: '12px',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <IconMessageCircle size={16} style={{ color: 'var(--color-accent-blue)' }} />
+          <IconMessageCircle size={16} style={{ color: '#3b82f6' }} />
           <span style={{
-            fontSize: '14px',
+            fontSize: '13px',
             fontWeight: 600,
-            color: 'var(--color-text-primary)',
+            color: '#f0f0f4',
+            textTransform: 'uppercase',
+            letterSpacing: '0.04em',
           }}>
-            Import iMessage Conversation
+            Import iMessage
           </span>
         </div>
         <button
@@ -102,14 +104,14 @@ export default function ImportIMessageForm({ leadId, onImported }) {
 
       <p style={{
         fontSize: '12px',
-        color: 'var(--color-text-muted)',
+        color: '#6b6b7b',
         marginBottom: '12px',
         lineHeight: 1.5,
       }}>
         Paste your iMessage conversation below. Supported formats:<br />
-        • [5/7/26, 2:30 PM] Brad: Message text<br />
-        • May 7, 2026 2:30 PM - Brad: Message text<br />
-        • Brad: Message text (will use current time)
+        • [5/7/26, 2:30 PM] Admin: Message text<br />
+        • May 7, 2026 2:30 PM - Admin: Message text<br />
+        • Admin: Message text (will use current time)
       </p>
 
       <textarea
@@ -129,9 +131,9 @@ export default function ImportIMessageForm({ leadId, onImported }) {
       {/* Preview */}
       {preview.length > 0 && (
         <div style={{
-          background: 'var(--color-bg-primary)',
-          border: '1px solid var(--color-border-subtle)',
-          borderRadius: '10px',
+          background: '#0a0a0f',
+          border: '1px solid #1c1c24',
+          borderRadius: '6px',
           padding: '12px',
           marginBottom: '12px',
           maxHeight: '200px',
@@ -140,7 +142,7 @@ export default function ImportIMessageForm({ leadId, onImported }) {
           <div style={{
             fontSize: '12px',
             fontWeight: 600,
-            color: 'var(--color-accent-blue)',
+            color: '#3b82f6',
             marginBottom: '8px',
           }}>
             Preview — {preview.length} message{preview.length > 1 ? 's' : ''} detected
@@ -148,11 +150,11 @@ export default function ImportIMessageForm({ leadId, onImported }) {
           {preview.map((msg, i) => (
             <div key={i} style={{
               fontSize: '13px',
-              color: 'var(--color-text-secondary)',
+              color: '#a0a0b0',
               padding: '6px 0',
-              borderBottom: i < preview.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
+              borderBottom: i < preview.length - 1 ? '1px solid #1c1c24' : 'none',
             }}>
-              <strong style={{ color: 'var(--color-text-primary)' }}>{msg.author}:</strong>{' '}
+              <strong style={{ color: '#f0f0f4' }}>{msg.author}:</strong>{' '}
               {msg.content}
             </div>
           ))}

@@ -18,56 +18,61 @@ export default function FilterBar({ activeFilter, onFilterChange }) {
         onClick={() => onFilterChange(null)}
         style={{ fontSize: '13px', flexShrink: 0 }}
       >
-        All
+        All Students
       </button>
-      {STUDENT_STATUSES.map(status => (
-        <button
-          key={status.value}
-          onClick={() => onFilterChange(status.value)}
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 14px',
-            flexShrink: 0,
-            borderRadius: '9999px',
-            fontSize: '13px',
-            fontWeight: 500,
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            border: activeFilter === status.value
-              ? `1px solid ${status.color}`
-              : '1px solid var(--color-border-subtle)',
-            background: activeFilter === status.value
-              ? status.bg
-              : 'transparent',
-            color: activeFilter === status.value
-              ? status.color
-              : 'var(--color-text-secondary)',
-            fontFamily: 'Inter, sans-serif',
-          }}
-          onMouseOver={e => {
-            if (activeFilter !== status.value) {
-              e.target.style.borderColor = status.color;
-              e.target.style.color = status.color;
-            }
-          }}
-          onMouseOut={e => {
-            if (activeFilter !== status.value) {
-              e.target.style.borderColor = 'var(--color-border-subtle)';
-              e.target.style.color = 'var(--color-text-secondary)';
-            }
-          }}
-        >
-          <span style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '50%',
-            background: status.color,
-          }} />
-          {status.label}
-        </button>
-      ))}
+      {STUDENT_STATUSES.map(status => {
+        const isActive = activeFilter === status.value;
+        return (
+          <button
+            key={status.value}
+            onClick={() => onFilterChange(status.value)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              flexShrink: 0,
+              borderRadius: '8px',
+              fontSize: '13px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              border: isActive
+                ? `1px solid ${status.color}`
+                : '1px solid #1c1c24',
+              background: isActive
+                ? status.bg
+                : 'transparent',
+              color: isActive
+                ? status.color
+                : '#a0a0b0',
+              fontFamily: 'Inter, sans-serif',
+            }}
+            onMouseOver={e => {
+              if (!isActive) {
+                e.currentTarget.style.borderColor = '#26262e';
+                e.currentTarget.style.color = '#f0f0f4';
+                e.currentTarget.style.background = '#18181f';
+              }
+            }}
+            onMouseOut={e => {
+              if (!isActive) {
+                e.currentTarget.style.borderColor = '#1c1c24';
+                e.currentTarget.style.color = '#a0a0b0';
+                e.currentTarget.style.background = 'transparent';
+              }
+            }}
+          >
+            <span style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              background: status.color,
+            }} />
+            {status.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

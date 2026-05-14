@@ -16,8 +16,8 @@ export default function ActivityItem({ activity, style: customStyle }) {
 
   const dotColors = {
     imessage: '#3b82f6',
-    manual: '#94a3b8',
-    system: '#06b6d4',
+    manual: '#a0a0b0',
+    system: '#00e5ff',
   };
 
   return (
@@ -42,15 +42,14 @@ export default function ActivityItem({ activity, style: customStyle }) {
           width: '10px',
           height: '10px',
           borderRadius: '50%',
-          background: dotColors[activity.source] || '#94a3b8',
-          boxShadow: `0 0 8px ${dotColors[activity.source] || '#94a3b8'}40`,
+          background: dotColors[activity.source] || '#a0a0b0',
           marginTop: '4px',
           flexShrink: 0,
         }} />
         <div style={{
-          width: '2px',
+          width: '1px',
           flex: 1,
-          background: 'linear-gradient(to bottom, var(--color-border-subtle), transparent)',
+          background: '#26262e',
           marginTop: '4px',
         }} />
       </div>
@@ -69,25 +68,26 @@ export default function ActivityItem({ activity, style: customStyle }) {
           <span style={{
             fontSize: '13px',
             fontWeight: 600,
-            color: 'var(--color-text-primary)',
+            color: '#f0f0f4',
           }}>
             {activity.author || 'System'}
           </span>
           <span style={{
             fontSize: '11px',
-            padding: '2px 8px',
-            borderRadius: '6px',
-            background: `${sourceConfig.color}20`,
+            padding: '2px 6px',
+            borderRadius: '4px',
+            background: 'transparent',
+            border: `1px solid ${sourceConfig.color}40`,
             color: sourceConfig.color,
             fontWeight: 500,
             textTransform: 'uppercase',
-            letterSpacing: '0.05em',
+            letterSpacing: '0.04em',
           }}>
             {sourceConfig.label}
           </span>
           <span style={{
             fontSize: '12px',
-            color: 'var(--color-text-muted)',
+            color: '#6b6b7b',
             marginLeft: 'auto',
           }}>
             {formatTimestamp(activity.timestamp)}
@@ -97,12 +97,12 @@ export default function ActivityItem({ activity, style: customStyle }) {
         {/* Content body */}
         <div style={{
           fontSize: '14px',
-          color: 'var(--color-text-secondary)',
+          color: '#a0a0b0',
           lineHeight: 1.6,
-          background: 'var(--color-bg-primary)',
+          background: '#0a0a0f',
           padding: '12px 16px',
-          borderRadius: '10px',
-          border: '1px solid var(--color-border-subtle)',
+          borderRadius: '8px',
+          border: '1px solid #1c1c24',
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}>

@@ -32,7 +32,7 @@ export default function Sidebar() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.5)',
+            background: 'rgba(0,0,0,0.6)',
             zIndex: 40,
             display: 'none',
           }}
@@ -42,8 +42,8 @@ export default function Sidebar() {
 
       <aside
         style={{
-          width: '260px',
-          minWidth: '260px',
+          width: '240px',
+          minWidth: '240px',
           height: '100vh',
           position: 'fixed',
           left: 0,
@@ -51,52 +51,49 @@ export default function Sidebar() {
           zIndex: 45,
           display: 'flex',
           flexDirection: 'column',
-          background: 'linear-gradient(180deg, #0d1321 0%, #0a0e17 100%)',
-          borderRight: '1px solid var(--color-border-subtle)',
-          transition: 'transform 0.3s ease',
+          background: '#0e0e14',
+          borderRight: '1px solid #1c1c24',
+          transition: 'transform 0.25s ease',
           transform: isOpen ? 'translateX(0)' : undefined,
         }}
         className="sidebar-container"
       >
         {/* Logo */}
         <div style={{
-          padding: '24px 20px',
-          borderBottom: '1px solid var(--color-border-subtle)',
+          padding: '24px 20px 20px',
+          borderBottom: '1px solid #1c1c24',
         }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
             <div style={{
-              width: '144px',
-              height: '144px',
-              borderRadius: '24px',
-              background: 'rgba(0, 229, 255, 0.15)',
-              border: '1px solid rgba(0, 229, 255, 0.25)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              background: '#131319',
+              border: '1px solid #26262e',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '48px',
+              fontSize: '13px',
               fontWeight: 800,
               color: '#00e5ff',
-              letterSpacing: '-0.02em',
             }}>
               OB
             </div>
-            <div style={{ textAlign: 'center' }}>
+            <div>
               <div style={{
-                fontSize: '16px',
+                fontSize: '15px',
                 fontWeight: 700,
-                color: 'var(--color-text-primary)',
-                letterSpacing: '-0.02em',
+                color: '#f0f0f4',
+                letterSpacing: '-0.01em',
               }}>
                 OttoBob.ai
               </div>
               <div style={{
                 fontSize: '11px',
-                color: 'var(--color-text-muted)',
-                fontWeight: 500,
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
+                color: '#6b6b7b',
+                fontWeight: 400,
               }}>
-                Mission Control
+                Otto University
               </div>
             </div>
           </Link>
@@ -107,13 +104,13 @@ export default function Sidebar() {
           <div style={{
             fontSize: '11px',
             fontWeight: 600,
-            color: 'var(--color-text-muted)',
+            color: '#4a4a58',
             textTransform: 'uppercase',
-            letterSpacing: '0.08em',
+            letterSpacing: '0.06em',
             padding: '0 8px',
             marginBottom: '8px',
           }}>
-            Navigation
+            Menu
           </div>
           {navItems.map((item) => {
             const isActive = pathname === item.href || 
@@ -129,43 +126,32 @@ export default function Sidebar() {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '12px',
-                  padding: '10px 12px',
-                  borderRadius: '10px',
+                  gap: '10px',
+                  padding: '9px 12px',
+                  borderRadius: '8px',
                   textDecoration: 'none',
                   fontSize: '14px',
                   fontWeight: isActive ? 600 : 400,
-                  color: isActive ? 'var(--color-accent-blue)' : 'var(--color-text-secondary)',
-                  background: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                  border: isActive ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid transparent',
-                  marginBottom: '4px',
-                  transition: 'all 0.2s ease',
+                  color: isActive ? '#00e5ff' : '#a0a0b0',
+                  background: isActive ? 'rgba(0, 229, 255, 0.08)' : 'transparent',
+                  marginBottom: '2px',
+                  transition: 'all 0.15s ease',
                 }}
                 onMouseOver={e => {
                   if (!isActive) {
-                    e.currentTarget.style.background = 'var(--color-bg-tertiary)';
-                    e.currentTarget.style.color = 'var(--color-text-primary)';
+                    e.currentTarget.style.background = '#18181f';
+                    e.currentTarget.style.color = '#f0f0f4';
                   }
                 }}
                 onMouseOut={e => {
                   if (!isActive) {
                     e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.color = 'var(--color-text-secondary)';
+                    e.currentTarget.style.color = '#a0a0b0';
                   }
                 }}
               >
                 {item.icon}
                 <span>{item.label}</span>
-                {isActive && (
-                  <div style={{
-                    marginLeft: 'auto',
-                    width: '6px',
-                    height: '6px',
-                    borderRadius: '50%',
-                    background: 'var(--color-accent-blue)',
-                    boxShadow: '0 0 8px var(--color-accent-blue)',
-                  }} />
-                )}
               </Link>
             );
           })}
@@ -173,8 +159,8 @@ export default function Sidebar() {
 
         {/* Footer */}
         <div style={{
-          padding: '16px 20px',
-          borderTop: '1px solid var(--color-border-subtle)',
+          padding: '16px 16px',
+          borderTop: '1px solid #1c1c24',
         }}>
           <div style={{
             display: 'flex',
@@ -187,26 +173,22 @@ export default function Sidebar() {
               gap: '10px',
             }}>
               <div style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'rgba(0, 229, 255, 0.15)',
-                border: '1px solid rgba(0, 229, 255, 0.25)',
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                background: '#18181f',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: '12px',
-                fontWeight: 700,
-                color: '#00e5ff',
+                fontWeight: 600,
+                color: '#a0a0b0',
               }}>
                 A
               </div>
               <div>
-                <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-primary)' }}>
+                <div style={{ fontSize: '13px', fontWeight: 500, color: '#f0f0f4' }}>
                   Admin
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>
-                  OttoBob.ai
                 </div>
               </div>
             </div>
@@ -215,14 +197,17 @@ export default function Sidebar() {
               style={{
                 background: 'none',
                 border: 'none',
-                color: 'var(--color-text-muted)',
+                color: '#6b6b7b',
                 cursor: 'pointer',
                 fontSize: '12px',
-                padding: '4px',
-                textDecoration: 'underline'
+                padding: '4px 8px',
+                borderRadius: '4px',
+                transition: 'color 0.15s ease',
               }}
+              onMouseOver={e => e.currentTarget.style.color = '#f0f0f4'}
+              onMouseOut={e => e.currentTarget.style.color = '#6b6b7b'}
             >
-              Logout
+              Sign out
             </button>
           </div>
         </div>

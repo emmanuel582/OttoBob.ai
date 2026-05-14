@@ -20,7 +20,7 @@ export default function AddNoteForm({ leadId, onNoteAdded }) {
       const { error } = await supabase.from('activity_logs').insert({
         student_id: leadId,
         source: 'manual',
-        author: 'Brad',
+        author: 'Admin',
         content: content.trim(),
       });
 
@@ -39,9 +39,9 @@ export default function AddNoteForm({ leadId, onNoteAdded }) {
 
   return (
     <form onSubmit={handleSubmit} style={{
-      background: 'var(--color-bg-secondary)',
-      border: '1px solid var(--color-border-subtle)',
-      borderRadius: '12px',
+      background: '#111118',
+      border: '1px solid #1c1c24',
+      borderRadius: '8px',
       padding: '16px',
       marginBottom: '24px',
     }}>
@@ -51,11 +51,13 @@ export default function AddNoteForm({ leadId, onNoteAdded }) {
         gap: '8px',
         marginBottom: '12px',
       }}>
-        <IconNote size={16} style={{ color: 'var(--color-text-secondary)' }} />
+        <IconNote size={16} style={{ color: '#a0a0b0' }} />
         <span style={{
-          fontSize: '14px',
+          fontSize: '13px',
           fontWeight: 600,
-          color: 'var(--color-text-primary)',
+          color: '#f0f0f4',
+          textTransform: 'uppercase',
+          letterSpacing: '0.04em',
         }}>
           Add Note
         </span>

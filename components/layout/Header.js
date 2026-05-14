@@ -12,9 +12,8 @@ export default function Header({ title, subtitle, children }) {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '16px 32px',
-      borderBottom: '1px solid var(--color-border-subtle)',
-      background: 'rgba(10, 14, 23, 0.8)',
-      backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid #1c1c24',
+      background: '#0a0a0f',
       position: 'sticky',
       top: 0,
       zIndex: 30,
@@ -29,7 +28,7 @@ export default function Header({ title, subtitle, children }) {
             display: 'none',
             background: 'none',
             border: 'none',
-            color: 'var(--color-text-secondary)',
+            color: '#a0a0b0',
             cursor: 'pointer',
             padding: '8px',
             borderRadius: '8px',
@@ -39,9 +38,9 @@ export default function Header({ title, subtitle, children }) {
         </button>
         <div>
           <h1 style={{
-            fontSize: '22px',
+            fontSize: '20px',
             fontWeight: 700,
-            color: 'var(--color-text-primary)',
+            color: '#f0f0f4',
             letterSpacing: '-0.02em',
           }}>
             {title}
@@ -49,7 +48,7 @@ export default function Header({ title, subtitle, children }) {
           {subtitle && (
             <p style={{
               fontSize: '13px',
-              color: 'var(--color-text-muted)',
+              color: '#6b6b7b',
               marginTop: '2px',
             }}>
               {subtitle}

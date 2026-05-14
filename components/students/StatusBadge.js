@@ -1,13 +1,14 @@
 'use client';
 
-import { formatStatus } from '@/lib/utils';
+import { getStatusConfig } from '@/lib/constants';
 
 export default function StatusBadge({ status, size = 'default' }) {
-  const className = `status-badge status-${status}`;
+  const config = getStatusConfig(status);
+  const label = config?.label || status;
   
   return (
     <span 
-      className={className}
+      className={`status-badge status-${status}`}
       style={size === 'sm' ? { fontSize: '11px', padding: '2px 8px' } : {}}
     >
       <span style={{
@@ -16,9 +17,8 @@ export default function StatusBadge({ status, size = 'default' }) {
         borderRadius: '50%',
         background: 'currentColor',
         display: 'inline-block',
-        boxShadow: '0 0 6px currentColor',
       }} />
-      {formatStatus(status)}
+      {label}
     </span>
   );
 }

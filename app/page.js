@@ -11,7 +11,7 @@ import { IconPlus, IconUsers, IconRocket, IconArrowRight, IconTrendingUp } from 
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ total: 0, byStatus: {} });
-  const [recentLeads, setRecentLeads] = useState([]);
+  const [recentStudents, setRecentStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
 
@@ -21,7 +21,6 @@ export default function DashboardPage() {
 
   async function fetchDashboardData() {
     try {
-      // Fetch all students for stats
       const { data: students, error } = await supabase
         .from('students')
         .select('*')
@@ -29,15 +28,15 @@ export default function DashboardPage() {
 
       if (error) throw error;
 
-      const allLeads = students || [];
+      const all = students || [];
       const byStatus = {};
       STUDENT_STATUSES.forEach(s => { byStatus[s.value] = 0; });
-      allLeads.forEach(l => {
-        byStatus[l.status] = (byStatus[l.status] || 0) + 1;
+      all.forEach(s => {
+        byStatus[s.status] = (byStatus[s.status] || 0) + 1;
       });
 
-      setStats({ total: allLeads.length, byStatus });
-      setRecentLeads(allLeads.slice(0, 5));
+      setStats({ total: all.length, byStatus });
+      setRecentStudents(all.slice(0, 5));
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
     } finally {
@@ -48,8 +47,8 @@ export default function DashboardPage() {
   return (
     <div>
       <Header 
-        title="Mission Control" 
-        subtitle="OttoBob.ai — Enrollment Overview"
+        title="Dashboard" 
+        subtitle="Otto University — Student Overview"
       >
         <Link href="/students" className="btn btn-primary btn-sm" style={{ textDecoration: 'none', gap: '6px' }}>
           <IconPlus size={14} />
@@ -58,62 +57,51 @@ export default function DashboardPage() {
       </Header>
 
       <div className="page-container">
-        {/* Total Students Hero Card */}
-        <div 
-          className="glass-card animate-fade-in"
-          style={{
-            padding: '32px',
-            marginBottom: '24px',
-            background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.04))',
-            border: '1px solid rgba(59,130,246,0.15)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
-            <div>
-              <div style={{
+        {/* Stats Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '12px',
+          marginBottom: '28px',
+        }}>
+          {/* Total Students Card */}
+          <div className="card animate-fade-in" style={{ padding: '20px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+            }}>
+              <span style={{
                 fontSize: '13px',
-                fontWeight: 600,
-                color: 'var(--color-text-muted)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                marginBottom: '8px',
+                fontWeight: 500,
+                color: '#6b6b7b',
               }}>
-                Total Students in Pipeline
-              </div>
+                Total Students
+              </span>
               <div style={{
-                fontSize: '48px',
-                fontWeight: 800,
-                color: 'var(--color-text-primary)',
-                letterSpacing: '-0.03em',
-                lineHeight: 1,
+                width: '32px',
+                height: '32px',
+                borderRadius: '8px',
+                background: '#18181f',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-                {loading ? (
-                  <div className="skeleton" style={{ width: '80px', height: '48px' }} />
-                ) : stats.total}
+                <IconUsers size={16} style={{ color: '#00e5ff' }} />
               </div>
             </div>
             <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '16px',
-              background: 'rgba(59, 130, 246, 0.15)',
-              border: '1px solid rgba(59, 130, 246, 0.25)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              fontSize: '32px',
+              fontWeight: 700,
+              color: '#f0f0f4',
+              letterSpacing: '-0.02em',
             }}>
-              <IconUsers size={28} style={{ color: '#60a5fa' }} />
+              {loading ? <div className="skeleton" style={{ width: '60px', height: '32px' }} /> : stats.total}
             </div>
           </div>
-        </div>
 
-        {/* Pipeline Status Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-          gap: '16px',
-          marginBottom: '32px',
-        }}>
+          {/* Status Cards */}
           {STUDENT_STATUSES.map((status, index) => (
             <Link
               key={status.value}
@@ -121,11 +109,11 @@ export default function DashboardPage() {
               style={{ textDecoration: 'none' }}
             >
               <div 
-                className="glass-card animate-fade-in"
+                className="card card-interactive animate-fade-in"
                 style={{
                   padding: '20px',
                   cursor: 'pointer',
-                  animationDelay: `${index * 80}ms`,
+                  animationDelay: `${(index + 1) * 50}ms`,
                   opacity: 0,
                   animationFillMode: 'forwards',
                 }}
@@ -133,30 +121,27 @@ export default function DashboardPage() {
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
+                  justifyContent: 'space-between',
                   marginBottom: '12px',
                 }}>
+                  <span style={{
+                    fontSize: '13px',
+                    fontWeight: 500,
+                    color: '#6b6b7b',
+                  }}>
+                    {status.label}
+                  </span>
                   <div style={{
                     width: '8px',
                     height: '8px',
                     borderRadius: '50%',
                     background: status.color,
-                    boxShadow: `0 0 8px ${status.color}`,
                   }} />
-                  <span style={{
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    color: 'var(--color-text-muted)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                  }}>
-                    {status.label}
-                  </span>
                 </div>
                 <div style={{
                   fontSize: '28px',
                   fontWeight: 700,
-                  color: status.color,
+                  color: '#f0f0f4',
                   letterSpacing: '-0.02em',
                 }}>
                   {loading ? (
@@ -170,32 +155,33 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Pipeline Visual Bar */}
+        {/* Enrollment Distribution Bar */}
         {!loading && stats.total > 0 && (
-          <div className="glass-card-static animate-fade-in" style={{ padding: '24px', marginBottom: '32px' }}>
+          <div className="card animate-fade-in" style={{ padding: '20px', marginBottom: '28px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              marginBottom: '16px',
+              marginBottom: '14px',
             }}>
-              <IconTrendingUp size={14} style={{ color: 'var(--color-text-muted)' }} />
+              <IconTrendingUp size={14} style={{ color: '#6b6b7b' }} />
               <span style={{
                 fontSize: '13px',
                 fontWeight: 600,
-                color: 'var(--color-text-muted)',
+                color: '#6b6b7b',
                 textTransform: 'uppercase',
-                letterSpacing: '0.05em',
+                letterSpacing: '0.04em',
               }}>
                 Enrollment Distribution
               </span>
             </div>
             <div style={{
               display: 'flex',
-              height: '12px',
-              borderRadius: '6px',
+              height: '8px',
+              borderRadius: '4px',
               overflow: 'hidden',
-              background: 'var(--color-bg-primary)',
+              background: '#18181f',
+              gap: '2px',
             }}>
               {STUDENT_STATUSES.map(status => {
                 const count = stats.byStatus[status.value] || 0;
@@ -207,8 +193,8 @@ export default function DashboardPage() {
                     style={{
                       width: `${pct}%`,
                       background: status.color,
-                      transition: 'width 0.5s ease',
-                      position: 'relative',
+                      borderRadius: '4px',
+                      transition: 'width 0.4s ease',
                     }}
                     title={`${status.label}: ${count} (${Math.round(pct)}%)`}
                   />
@@ -232,7 +218,7 @@ export default function DashboardPage() {
                       borderRadius: '2px',
                       background: status.color,
                     }} />
-                    <span style={{ fontSize: '12px', color: 'var(--color-text-secondary)' }}>
+                    <span style={{ fontSize: '12px', color: '#a0a0b0' }}>
                       {status.label}: {count}
                     </span>
                   </div>
@@ -243,113 +229,113 @@ export default function DashboardPage() {
         )}
 
         {/* Recent Students */}
-        <div className="glass-card-static animate-fade-in" style={{ padding: '24px' }}>
+        <div className="card animate-fade-in" style={{ padding: '0', overflow: 'hidden' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            marginBottom: '20px',
+            padding: '16px 20px',
+            borderBottom: '1px solid #1c1c24',
           }}>
-            <div style={{
-              fontSize: '13px',
+            <span style={{
+              fontSize: '14px',
               fontWeight: 600,
-              color: 'var(--color-text-muted)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em',
+              color: '#f0f0f4',
             }}>
               Recent Students
-            </div>
+            </span>
             <Link href="/students" style={{
               fontSize: '13px',
-              color: 'var(--color-accent-blue)',
+              color: '#00e5ff',
               textDecoration: 'none',
               fontWeight: 500,
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
+              transition: 'opacity 0.15s ease',
             }}>
               View All <IconArrowRight size={12} />
             </Link>
           </div>
 
           {loading ? (
-            <div>
+            <div style={{ padding: '20px' }}>
               {[1, 2, 3].map(i => (
-                <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-                  <div className="skeleton" style={{ width: '40px', height: '40px', borderRadius: '10px' }} />
+                <div key={i} style={{ display: 'flex', gap: '12px', padding: '12px 0', borderBottom: '1px solid #1c1c24' }}>
+                  <div className="skeleton" style={{ width: '36px', height: '36px', borderRadius: '50%' }} />
                   <div style={{ flex: 1 }}>
-                    <div className="skeleton" style={{ width: '60%', height: '16px', marginBottom: '6px' }} />
-                    <div className="skeleton" style={{ width: '40%', height: '12px' }} />
+                    <div className="skeleton" style={{ width: '50%', height: '14px', marginBottom: '6px' }} />
+                    <div className="skeleton" style={{ width: '30%', height: '12px' }} />
                   </div>
                 </div>
               ))}
             </div>
-          ) : recentLeads.length === 0 ? (
+          ) : recentStudents.length === 0 ? (
             <div style={{
               textAlign: 'center',
-              padding: '40px',
-              color: 'var(--color-text-muted)',
+              padding: '48px 24px',
+              color: '#6b6b7b',
             }}>
-              <IconRocket size={36} style={{ color: 'var(--color-text-muted)', margin: '0 auto 12px', display: 'block' }} />
-              <div style={{ fontSize: '15px', fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: '8px' }}>
+              <IconRocket size={32} style={{ color: '#4a4a58', margin: '0 auto 12px', display: 'block' }} />
+              <div style={{ fontSize: '14px', fontWeight: 500, color: '#a0a0b0', marginBottom: '6px' }}>
                 No students yet
               </div>
               <div style={{ fontSize: '13px', marginBottom: '16px' }}>
-                Start building your student base by adding your first student
+                Add your first student to get started
               </div>
               <Link href="/students" className="btn btn-primary btn-sm" style={{ textDecoration: 'none' }}>
-                Add First Student
+                Add Student
               </Link>
             </div>
           ) : (
             <div>
-              {recentLeads.map((student, i) => (
+              {recentStudents.map((student, i) => (
                 <Link
                   key={student.id}
                   href={`/students/${student.id}`}
+                  className="table-row"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '14px',
-                    padding: '14px 8px',
-                    borderBottom: i < recentLeads.length - 1 ? '1px solid var(--color-border-subtle)' : 'none',
+                    gap: '12px',
+                    padding: '12px 20px',
+                    borderBottom: i < recentStudents.length - 1 ? '1px solid #1c1c24' : 'none',
                     textDecoration: 'none',
-                    borderRadius: '8px',
-                    transition: 'background 0.2s ease',
                   }}
-                  onMouseOver={e => e.currentTarget.style.background = 'var(--color-bg-tertiary)'}
-                  onMouseOut={e => e.currentTarget.style.background = 'transparent'}
                 >
+                  {/* Avatar */}
                   <div style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '10px',
-                    background: `linear-gradient(135deg, ${STUDENT_STATUSES.find(s => s.value === student.status)?.color || '#3b82f6'}40, ${STUDENT_STATUSES.find(s => s.value === student.status)?.color || '#3b82f6'}20)`,
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: '#18181f',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '16px',
-                    fontWeight: 700,
-                    color: STUDENT_STATUSES.find(s => s.value === student.status)?.color || '#3b82f6',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#a0a0b0',
                     flexShrink: 0,
+                    overflow: 'hidden',
                   }}>
-                    {student.full_name.charAt(0).toUpperCase()}
+                    {student.photo_url ? (
+                      <img src={student.photo_url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      student.full_name.charAt(0).toUpperCase()
+                    )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{
                       fontSize: '14px',
-                      fontWeight: 600,
-                      color: 'var(--color-text-primary)',
+                      fontWeight: 500,
+                      color: '#f0f0f4',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                     }}>
                       {student.full_name}
                     </div>
-                    <div style={{
-                      fontSize: '12px',
-                      color: 'var(--color-text-muted)',
-                    }}>
+                    <div style={{ fontSize: '12px', color: '#6b6b7b' }}>
                       {student.major || 'No major'} · {timeAgo(student.created_at)}
                     </div>
                   </div>
