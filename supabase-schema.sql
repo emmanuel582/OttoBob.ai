@@ -27,6 +27,9 @@ CREATE TABLE IF NOT EXISTS public.students (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Ensure photo_url column exists if table was already created
+ALTER TABLE public.students ADD COLUMN IF NOT EXISTS photo_url TEXT;
+
 -- Indexes for students
 CREATE INDEX IF NOT EXISTS idx_students_status ON public.students(status);
 CREATE INDEX IF NOT EXISTS idx_students_follow_up ON public.students(next_follow_up_date);
