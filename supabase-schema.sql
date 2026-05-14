@@ -96,5 +96,37 @@ CREATE TRIGGER trigger_students_updated_at
     EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================
--- DONE — Phase 1 schema is ready
+-- DONE — Phase 2 database schema is ready
 -- ============================================
+
+-- ============================================
+-- STORAGE: avatars
+-- ============================================
+
+-- Create the bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policies for avatars bucket
+-- 1. Allow public read access
+CREATE POLICY "Avatar images are publicly accessible" 
+ON storage.objects FOR SELECT 
+USING (bucket_id = 'avatars');
+
+-- 2. Allow authenticated users to upload
+CREATE POLICY "Authenticated users can upload avatars" 
+ON storage.objects FOR INSERT 
+TO authenticated 
+WITH CHECK (bucket_id = 'avatars');
+
+-- 3. Allow authenticated users to update/delete their uploads
+CREATE POLICY "Authenticated users can update avatars" 
+ON storage.objects FOR UPDATE 
+TO authenticated 
+USING (bucket_id = 'avatars');
+
+CREATE POLICY "Authenticated users can delete avatars" 
+ON storage.objects FOR DELETE 
+TO authenticated 
+USING (bucket_id = 'avatars');
