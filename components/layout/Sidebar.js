@@ -20,11 +20,21 @@ export default function Sidebar() {
   const [userEmail, setUserEmail] = useState('');
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUserEmail(user.email);
+      if (user) setUserEmail(user.email);
+    });
+
+    // Listen for changes (login/logout/token refresh)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setUserEmail(session.user.email);
+      } else {
+        setUserEmail('');
       }
     });
+
+    return () => subscription.unsubscribe();
   }, [supabase]);
 
   const handleLogout = async () => {
