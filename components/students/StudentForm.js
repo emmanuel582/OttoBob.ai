@@ -30,7 +30,7 @@ export default function StudentForm({ student, onSave, onCancel }) {
 
   function validate() {
     const errs = {};
-    if (!form.full_name.trim()) errs.full_name = 'Full name is required';
+    if (!form.full_name?.trim()) errs.full_name = 'Full name is required';
     if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) errs.email = 'Invalid email format';
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -43,14 +43,14 @@ export default function StudentForm({ student, onSave, onCancel }) {
     setSaving(true);
     try {
       const data = {
-        full_name: form.full_name.trim(),
-        major: form.major.trim() || null,
-        email: form.email.trim() || null,
-        phone: form.phone.trim() || null,
+        full_name: form.full_name?.trim() || '',
+        major: form.major?.trim() || null,
+        email: form.email?.trim() || null,
+        phone: form.phone?.trim() || null,
         source: form.source || null,
         status: form.status,
         next_follow_up_date: form.next_follow_up_date || null,
-        notes: form.notes.trim() || null,
+        notes: form.notes?.trim() || null,
       };
 
       if (isEditing) {
