@@ -1,0 +1,98 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import ActivityItem from './ActivityItem';
+import AddNoteForm from './AddNoteForm';
+import ImportIMessageForm from './ImportIMessageForm';
+import { IconClipboard } from '@/components/ui/Icons';
+
+export default function ActivityTimeline({ leadId }) {
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const supabase = createClient();
+
+  const fetchActivities = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('activity_logs')
+        .select('*')
+        .eq('student_id', leadId)
+        .order('timestamp', { ascending: false });
+
+      if (error) throw error;
+      setActivities(data || []);
+    } catch (err) {
+      console.error('Error fetching activities:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [leadId, supabase]);
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
+
+  if (loading) {
+    return (
+      <div>
+        {[1, 2, 3].map(i => (
+          <div key={i} style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+            <div className="skeleton" style={{ width: '10px', height: '10px', borderRadius: '50%', marginTop: '4px' }} />
+            <div style={{ flex: 1 }}>
+              <div className="skeleton" style={{ height: '16px', width: '60%', marginBottom: '8px' }} />
+              <div className="skeleton" style={{ height: '60px', width: '100%' }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {/* Add Note Form */}
+      <AddNoteForm leadId={leadId} onNoteAdded={fetchActivities} />
+
+      {/* Import iMessage */}
+      <ImportIMessageForm leadId={leadId} onImported={fetchActivities} />
+
+      {/* Timeline */}
+      {activities.length === 0 ? (
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 24px',
+          color: 'var(--color-text-muted)',
+        }}>
+          <IconClipboard size={40} style={{ color: 'var(--color-text-muted)', marginBottom: '12px', margin: '0 auto 12px' }} />
+          <div style={{ fontSize: '15px', fontWeight: 500, marginBottom: '4px', color: 'var(--color-text-secondary)' }}>
+            No activity yet
+          </div>
+          <div style={{ fontSize: '13px' }}>
+            Add a note or import iMessages to start the timeline
+          </div>
+        </div>
+      ) : (
+        <div>
+          <div style={{
+            fontSize: '13px',
+            fontWeight: 600,
+            color: 'var(--color-text-muted)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            marginBottom: '16px',
+          }}>
+            Activity Timeline — {activities.length} entr{activities.length === 1 ? 'y' : 'ies'}
+          </div>
+          {activities.map((activity, index) => (
+            <ActivityItem
+              key={activity.id}
+              activity={activity}
+              style={{ animationDelay: `${index * 50}ms` }}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
