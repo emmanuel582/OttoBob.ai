@@ -51,6 +51,7 @@ export default function StudentForm({ student, onSave, onCancel }) {
         status: form.status,
         next_follow_up_date: form.next_follow_up_date || null,
         notes: form.notes?.trim() || null,
+        photo_url: form.photo_url || null,
       };
 
       if (isEditing) {
