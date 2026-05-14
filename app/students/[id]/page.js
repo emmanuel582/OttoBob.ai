@@ -51,7 +51,7 @@ export default function StudentDetailPage({ params }) {
       if (error) throw error;
       await supabase.from('activity_logs').insert({
         student_id: id, source: 'system', author: 'System',
-        content: `Status changed from "${student.status.replace(/_/g,' ')}" to "${newStatus.replace(/_/g,' ')}"`,
+        content: `Status changed from "${student.status.replace(/_/g, ' ')}" to "${newStatus.replace(/_/g, ' ')}"`,
       });
       setStudent(prev => ({ ...prev, status: newStatus }));
       toast.success('Status updated');
@@ -203,16 +203,16 @@ export default function StudentDetailPage({ params }) {
             )}
 
             {/* Quick Actions */}
-            <div className="card animate-fade-in" style={{ padding: '0', overflow: 'hidden' }}>
+            <div className="card animate-fade-in" style={{ padding: '0', overflow: 'visible' }}>
               <div style={{ padding: '14px 18px', borderBottom: '1px solid #1c1c24' }}>
                 <span style={{ fontSize: '13px', fontWeight: 600, color: '#a0a0b0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Quick Actions</span>
               </div>
               <div style={{ padding: '8px' }}>
                 {/* Status Changer */}
                 <div style={{ position: 'relative', marginBottom: '4px' }}>
-                  <button 
-                    className="btn btn-ghost btn-sm" 
-                    style={{ width: '100%', justifyContent: 'flex-start', gap: '8px' }} 
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    style={{ width: '100%', justifyContent: 'flex-start', gap: '8px' }}
                     onClick={() => setStatusDropdown(!statusDropdown)}
                   >
                     <IconZap size={14} /> Change Status

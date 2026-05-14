@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS public.students (
         CHECK (status IN ('applied', 'contacted', 'interviewing', 'approved', 'active', 'rejected')),
     next_follow_up_date DATE,
     notes TEXT,
+    photo_url TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -8,9 +8,11 @@ import StatusBadge from '@/components/students/StatusBadge';
 import { STUDENT_STATUSES } from '@/lib/constants';
 import { timeAgo } from '@/lib/utils';
 import { IconPlus, IconUsers, IconRocket, IconArrowRight, IconTrendingUp } from '@/components/ui/Icons';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({ total: 0, byStatus: {} });
+  const [chartData, setChartData] = useState([]);
   const [recentStudents, setRecentStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -37,6 +39,31 @@ export default function DashboardPage() {
 
       setStats({ total: all.length, byStatus });
       setRecentStudents(all.slice(0, 5));
+
+      // Compute chart data (Enrollments per day for the last 7 days)
+      const dataMap = {};
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dataMap[d.toISOString().split('T')[0]] = 0;
+      }
+      
+      all.forEach(s => {
+        const dateStr = s.created_at.split('T')[0];
+        if (dataMap[dateStr] !== undefined) {
+          dataMap[dateStr]++;
+        }
+      });
+
+      const formattedChartData = Object.keys(dataMap).map(dateStr => {
+        const dateObj = new Date(dateStr);
+        return {
+          name: dateObj.toLocaleDateString('en-US', { weekday: 'short' }),
+          Enrollments: dataMap[dateStr]
+        };
+      });
+
+      setChartData(formattedChartData);
     } catch (err) {
       console.error('Error fetching dashboard data:', err);
     } finally {
@@ -162,7 +189,7 @@ export default function DashboardPage() {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              marginBottom: '14px',
+              marginBottom: '24px',
             }}>
               <IconTrendingUp size={14} style={{ color: '#6b6b7b' }} />
               <span style={{
@@ -172,40 +199,63 @@ export default function DashboardPage() {
                 textTransform: 'uppercase',
                 letterSpacing: '0.04em',
               }}>
-                Enrollment Distribution
+                Enrollment Trends (Last 7 Days)
               </span>
             </div>
-            <div style={{
-              display: 'flex',
-              height: '8px',
-              borderRadius: '4px',
-              overflow: 'hidden',
-              background: '#18181f',
-              gap: '2px',
-            }}>
-              {STUDENT_STATUSES.map(status => {
-                const count = stats.byStatus[status.value] || 0;
-                const pct = stats.total > 0 ? (count / stats.total) * 100 : 0;
-                if (pct === 0) return null;
-                return (
-                  <div
-                    key={status.value}
-                    style={{
-                      width: `${pct}%`,
-                      background: status.color,
-                      borderRadius: '4px',
-                      transition: 'width 0.4s ease',
-                    }}
-                    title={`${status.label}: ${count} (${Math.round(pct)}%)`}
+            
+            <div style={{ height: '240px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorEnrollments" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#00e5ff" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#00e5ff" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis 
+                    dataKey="name" 
+                    stroke="#4a4a58" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    dy={10} 
                   />
-                );
-              })}
+                  <YAxis 
+                    stroke="#4a4a58" 
+                    fontSize={12} 
+                    tickLine={false} 
+                    axisLine={false} 
+                    allowDecimals={false}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#111118', 
+                      borderColor: '#1c1c24',
+                      borderRadius: '8px',
+                      color: '#f0f0f4',
+                      fontSize: '13px'
+                    }}
+                    itemStyle={{ color: '#00e5ff' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="Enrollments" 
+                    stroke="#00e5ff" 
+                    strokeWidth={2}
+                    fillOpacity={1} 
+                    fill="url(#colorEnrollments)" 
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
+
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
               gap: '16px',
-              marginTop: '12px',
+              marginTop: '20px',
+              paddingTop: '20px',
+              borderTop: '1px solid #1c1c24',
             }}>
               {STUDENT_STATUSES.map(status => {
                 const count = stats.byStatus[status.value] || 0;

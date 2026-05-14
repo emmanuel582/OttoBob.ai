@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { IconDashboard, IconUsers } from '@/components/ui/Icons';
@@ -16,6 +17,15 @@ export default function Sidebar() {
   const router = useRouter();
   const { isOpen, close } = useSidebar();
   const supabase = createClient();
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserEmail(user.email);
+      }
+    });
+  }, [supabase]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -113,9 +123,9 @@ export default function Sidebar() {
             Menu
           </div>
           {navItems.map((item) => {
-            const isActive = pathname === item.href || 
+            const isActive = pathname === item.href ||
               (item.href !== '/' && pathname.startsWith(item.href));
-            
+
             return (
               <Link
                 key={item.href}
@@ -183,12 +193,21 @@ export default function Sidebar() {
                 fontSize: '12px',
                 fontWeight: 600,
                 color: '#a0a0b0',
+                textTransform: 'uppercase',
               }}>
-                A
+                {userEmail ? userEmail.charAt(0) : 'A'}
               </div>
-              <div>
-                <div style={{ fontSize: '13px', fontWeight: 500, color: '#f0f0f4' }}>
-                  Admin
+              <div style={{ minWidth: 0, overflow: 'hidden' }}>
+                <div style={{
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#f0f0f4',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '120px'
+                }}>
+                  {userEmail || 'Admin'}
                 </div>
               </div>
             </div>

@@ -11,9 +11,9 @@ export default function AppShell({ children }) {
       <Sidebar />
       <main style={{
         flex: 1,
-        marginLeft: '260px',
+        marginLeft: '240px',
         minHeight: '100vh',
-        transition: 'margin-left 0.3s ease',
+        transition: 'margin-left 0.25s ease',
       }}
         className="main-content"
       >

@@ -140,19 +140,70 @@ export default function StudentForm({ student, onSave, onCancel }) {
     marginTop: '4px',
   };
 
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  async function handleImageUpload(e) {
+    try {
+      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      setUploadingImage(true);
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      
+      handleChange('photo_url', data.publicUrl);
+      toast.success('Photo uploaded');
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+      toast.error('Error uploading photo. Make sure avatars bucket exists and is public.');
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit}>
-      {/* Photo Upload Area (Dummy for now) */}
+      {/* Photo Upload Area */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-        <div className="photo-upload">
-          <IconUsers size={32} style={{ color: '#4a4a58' }} />
+        <div style={{
+          width: '64px',
+          height: '64px',
+          borderRadius: '50%',
+          background: '#18181f',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          border: '1px dashed #26262e'
+        }}>
+          {form.photo_url ? (
+            <img src={form.photo_url} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <IconUsers size={24} style={{ color: '#4a4a58' }} />
+          )}
         </div>
         <div>
           <div style={{ fontSize: '14px', fontWeight: 600, color: '#f0f0f4', marginBottom: '4px' }}>Profile Photo</div>
           <div style={{ fontSize: '12px', color: '#6b6b7b', marginBottom: '8px' }}>Recommended size: 256x256px</div>
-          <button type="button" className="btn btn-secondary btn-sm" disabled>
-            Upload Photo
-          </button>
+          <label className="btn btn-secondary btn-sm" style={{ cursor: uploadingImage ? 'not-allowed' : 'pointer', display: 'inline-block' }}>
+            {uploadingImage ? 'Uploading...' : 'Upload Photo'}
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              disabled={uploadingImage}
+              style={{ display: 'none' }} 
+            />
+          </label>
         </div>
       </div>
 
