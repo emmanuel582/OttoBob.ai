@@ -48,11 +48,10 @@ CREATE INDEX IF NOT EXISTS idx_activity_logs_lead_timestamp
     ON public.activity_logs(student_id, timestamp DESC);
 
 -- ============================================
--- GRANTS — Allow anon role to access tables
+-- GRANTS — Secure access (Authenticated ONLY)
 -- ============================================
-GRANT USAGE ON SCHEMA public TO anon;
-GRANT ALL ON public.students TO anon;
-GRANT ALL ON public.activity_logs TO anon;
+REVOKE ALL ON public.students FROM anon;
+REVOKE ALL ON public.activity_logs FROM anon;
 GRANT USAGE ON SCHEMA public TO authenticated;
 GRANT ALL ON public.students TO authenticated;
 GRANT ALL ON public.activity_logs TO authenticated;
@@ -69,18 +68,14 @@ DROP POLICY IF EXISTS "Allow all for anon on activity_logs" ON public.activity_l
 DROP POLICY IF EXISTS "Allow all for authenticated on students" ON public.students;
 DROP POLICY IF EXISTS "Allow all for authenticated on activity_logs" ON public.activity_logs;
 
--- Phase 1: Single user (Brad) — allow all operations
-CREATE POLICY "Allow all for anon on students" ON public.students
-    FOR ALL TO anon USING (true) WITH CHECK (true);
-
-CREATE POLICY "Allow all for anon on activity_logs" ON public.activity_logs
-    FOR ALL TO anon USING (true) WITH CHECK (true);
-
+-- Secure Phase: Heavily Guarded - Only authenticated users can perform operations
 CREATE POLICY "Allow all for authenticated on students" ON public.students
-    FOR ALL TO authenticated USING (true) WITH CHECK (true);
+    FOR ALL TO authenticated USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
 CREATE POLICY "Allow all for authenticated on activity_logs" ON public.activity_logs
-    FOR ALL TO authenticated USING (true) WITH CHECK (true);
+    FOR ALL TO authenticated USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+
 
 -- ============================================
 -- AUTO-UPDATE TRIGGER for updated_at
