@@ -33,7 +33,7 @@ export async function POST(request) {
               <p style="color: #00e5ff; font-size: 18px; font-weight: 500; margin-top: 8px;">Your growth journey begins here.</p>
             </div>
             
-            <div style="background-color: #111118; border: 1px solid #1c1c24; border-radius: 16px; padding: 24px; text-align: left; margin-bottom: 24px;">
+            <div style="background-color: #111118; border: 1px solid #1c1c24; border-radius: 16px; padding: 24px; text-align: left;">
               <p style="color: #a0a0b0; font-size: 16px; line-height: 1.6; margin-top: 0;">Hi ${name},</p>
               
               <p style="color: #a0a0b0; font-size: 16px; line-height: 1.6;">
@@ -47,12 +47,6 @@ export async function POST(request) {
               <p style="color: #a0a0b0; font-size: 16px; line-height: 1.6; margin-bottom: 0;">
                 If you have any questions or need help getting started, just reply to this email!
               </p>
-            </div>
-            
-            <div>
-              <a href="https://ottobob-ai.vercel.app/" style="display: inline-block; background-color: #00e5ff; color: #0a0a0f; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 28px; border-radius: 12px; transition: background-color 0.2s;">
-                Go to Dashboard
-              </a>
             </div>
             
           </div>
