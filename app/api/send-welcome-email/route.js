@@ -50,7 +50,7 @@ export async function POST(request) {
             </div>
             
             <div>
-              <a href="https://ottobob.ai" style="display: inline-block; background-color: #00e5ff; color: #0a0a0f; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 28px; border-radius: 12px; transition: background-color 0.2s;">
+              <a href="https://ottobob-ai.vercel.app/" style="display: inline-block; background-color: #00e5ff; color: #0a0a0f; font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 28px; border-radius: 12px; transition: background-color 0.2s;">
                 Go to Dashboard
               </a>
             </div>
