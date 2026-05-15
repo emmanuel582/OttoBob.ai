@@ -7,7 +7,7 @@ import AddNoteForm from './AddNoteForm';
 import ImportIMessageForm from './ImportIMessageForm';
 import { IconClipboard } from '@/components/ui/Icons';
 
-export default function ActivityTimeline({ leadId }) {
+export default function ActivityTimeline({ studentId }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -17,7 +17,7 @@ export default function ActivityTimeline({ leadId }) {
       const { data, error } = await supabase
         .from('activity_logs')
         .select('*')
-        .eq('student_id', leadId)
+        .eq('student_id', studentId)
         .order('timestamp', { ascending: false });
 
       if (error) throw error;
@@ -52,10 +52,10 @@ export default function ActivityTimeline({ leadId }) {
   return (
     <div>
       {/* Add Note Form */}
-      <AddNoteForm leadId={leadId} onNoteAdded={fetchActivities} />
+      <AddNoteForm studentId={studentId} onNoteAdded={fetchActivities} />
 
       {/* Import iMessage */}
-      <ImportIMessageForm leadId={leadId} onImported={fetchActivities} />
+      <ImportIMessageForm studentId={studentId} onImported={fetchActivities} />
 
       {/* Timeline */}
       {activities.length === 0 ? (

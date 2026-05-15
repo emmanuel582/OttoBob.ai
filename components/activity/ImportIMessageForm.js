@@ -6,7 +6,7 @@ import { useToast } from '@/components/ui/Toast';
 import { parseIMessages } from '@/lib/utils';
 import { IconMessageCircle, IconX } from '@/components/ui/Icons';
 
-export default function ImportIMessageForm({ leadId, onImported }) {
+export default function ImportIMessageForm({ studentId, onImported }) {
   const [text, setText] = useState('');
   const [preview, setPreview] = useState([]);
   const [importing, setImporting] = useState(false);
@@ -30,7 +30,7 @@ export default function ImportIMessageForm({ leadId, onImported }) {
     setImporting(true);
     try {
       const rows = preview.map(msg => ({
-        student_id: leadId,
+        student_id: studentId,
         source: 'imessage',
         author: msg.author,
         content: msg.content,

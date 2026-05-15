@@ -260,7 +260,7 @@ export default function StudentDetailPage({ params }) {
                 <span style={{ fontSize: '13px', fontWeight: 600, color: '#a0a0b0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Activity Log</span>
               </div>
               <div style={{ padding: '16px 18px' }}>
-                <ActivityTimeline leadId={id} key={student.status} />
+                <ActivityTimeline studentId={id} key={student.status} />
               </div>
             </div>
           </div>
@@ -274,7 +274,7 @@ export default function StudentDetailPage({ params }) {
 
       {/* Delete Modal */}
       <Modal isOpen={deleteModal} onClose={() => setDeleteModal(false)} title="Confirm Delete">
-        <DeleteConfirm leadName={student.full_name} onConfirm={handleDelete} onCancel={() => setDeleteModal(false)} deleting={deleting} />
+        <DeleteConfirm studentName={student.full_name} onConfirm={handleDelete} onCancel={() => setDeleteModal(false)} deleting={deleting} />
       </Modal>
 
       <style jsx global>{`

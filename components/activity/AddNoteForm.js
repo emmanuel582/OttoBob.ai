@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useToast } from '@/components/ui/Toast';
 import { IconNote } from '@/components/ui/Icons';
 
-export default function AddNoteForm({ leadId, onNoteAdded }) {
+export default function AddNoteForm({ studentId, onNoteAdded }) {
   const [content, setContent] = useState('');
   const [saving, setSaving] = useState(false);
   const toast = useToast();
@@ -18,7 +18,7 @@ export default function AddNoteForm({ leadId, onNoteAdded }) {
     setSaving(true);
     try {
       const { error } = await supabase.from('activity_logs').insert({
-        student_id: leadId,
+        student_id: studentId,
         source: 'manual',
         author: 'Admin',
         content: content.trim(),

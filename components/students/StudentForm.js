@@ -98,14 +98,24 @@ export default function StudentForm({ student, onSave, onCancel }) {
           content: `Student enrolled — ${newStudent.full_name}${newStudent.major ? ` at ${newStudent.major}` : ''}`,
         });
 
-        // Log automatic welcome email
+        // Send automatic welcome email
         if (newStudent.email) {
-          await supabase.from('activity_logs').insert({
-            student_id: newStudent.id,
-            source: 'system',
-            author: 'Bob (AI)',
-            content: `Sent automatic welcome email to ${newStudent.email}`,
-          });
+          try {
+            await fetch('/api/send-welcome-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: newStudent.email, name: newStudent.full_name }),
+            });
+
+            await supabase.from('activity_logs').insert({
+              student_id: newStudent.id,
+              source: 'system',
+              author: 'Bob (AI)',
+              content: `Sent automatic welcome email to ${newStudent.email}`,
+            });
+          } catch (emailError) {
+            console.error('Error sending welcome email:', emailError);
+          }
         }
 
         toast.success('Student enrolled successfully');
@@ -160,7 +170,7 @@ export default function StudentForm({ student, onSave, onCancel }) {
       if (uploadError) throw uploadError;
 
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
-      
+
       handleChange('photo_url', data.publicUrl);
       toast.success('Photo uploaded');
     } catch (error) {
@@ -197,12 +207,12 @@ export default function StudentForm({ student, onSave, onCancel }) {
           <div style={{ fontSize: '12px', color: '#6b6b7b', marginBottom: '8px' }}>Recommended size: 256x256px</div>
           <label className="btn btn-secondary btn-sm" style={{ cursor: uploadingImage ? 'not-allowed' : 'pointer', display: 'inline-block' }}>
             {uploadingImage ? 'Uploading...' : 'Upload Photo'}
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleImageUpload} 
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
               disabled={uploadingImage}
-              style={{ display: 'none' }} 
+              style={{ display: 'none' }}
             />
           </label>
         </div>

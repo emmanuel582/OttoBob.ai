@@ -2,7 +2,7 @@
 
 import { IconAlertTriangle } from '@/components/ui/Icons';
 
-export default function DeleteConfirm({ leadName, onConfirm, onCancel, deleting }) {
+export default function DeleteConfirm({ studentName, onConfirm, onCancel, deleting }) {
   return (
     <div>
       <div style={{
@@ -38,7 +38,7 @@ export default function DeleteConfirm({ leadName, onConfirm, onCancel, deleting 
           lineHeight: 1.5,
           maxWidth: '360px',
         }}>
-          Are you sure you want to delete <strong style={{ color: 'var(--color-text-primary)' }}>{leadName}</strong>? 
+          Are you sure you want to delete <strong style={{ color: 'var(--color-text-primary)' }}>{studentName}</strong>? 
           This will permanently remove all associated activity logs and cannot be undone.
         </p>
       </div>

@@ -29,15 +29,23 @@ export async function proxy(request) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // If there's no user and the route is not /login, redirect to /login
-  if (!user && !request.nextUrl.pathname.startsWith('/login')) {
+  const pathname = request.nextUrl.pathname;
+
+  // Public routes that don't require authentication
+  const isPublicRoute =
+    pathname === '/landing' ||
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/api/');
+
+  // If there's no user and the route is not public, redirect to /login
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  // If there is a user and the route is /login, redirect to /
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
+  // If there is a user and the route is /login, redirect to dashboard
+  if (user && pathname.startsWith('/login')) {
     const url = request.nextUrl.clone();
     url.pathname = '/';
     return NextResponse.redirect(url);
