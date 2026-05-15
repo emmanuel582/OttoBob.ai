@@ -27,7 +27,7 @@ export default function ActivityTimeline({ studentId }) {
     } finally {
       setLoading(false);
     }
-  }, [leadId, supabase]);
+  }, [studentId, supabase]);
 
   useEffect(() => {
     fetchActivities();
