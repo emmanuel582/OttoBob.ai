@@ -8,7 +8,7 @@ import ImportIMessageForm from './ImportIMessageForm';
 import SendVideoForm from './SendVideoForm';
 import { IconClipboard } from '@/components/ui/Icons';
 
-export default function ActivityTimeline({ studentId, studentStatus }) {
+export default function ActivityTimeline({ studentId, studentName, studentStatus }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -34,6 +34,9 @@ export default function ActivityTimeline({ studentId, studentStatus }) {
     fetchActivities();
   }, [fetchActivities]);
 
+  // Count video sends
+  const videoCount = activities.filter(a => a.source === 'video' || a.source === 'heygen').length;
+
   if (loading) {
     return (
       <div>
@@ -53,7 +56,12 @@ export default function ActivityTimeline({ studentId, studentStatus }) {
   return (
     <div>
       {/* Send Video Form */}
-      <SendVideoForm studentId={studentId} studentStatus={studentStatus} onVideoSent={fetchActivities} />
+      <SendVideoForm
+        studentId={studentId}
+        studentName={studentName}
+        studentStatus={studentStatus}
+        onVideoSent={fetchActivities}
+      />
 
       {/* Add Note Form */}
       <AddNoteForm studentId={studentId} onNoteAdded={fetchActivities} />
@@ -73,20 +81,35 @@ export default function ActivityTimeline({ studentId, studentStatus }) {
             No activity yet
           </div>
           <div style={{ fontSize: '13px' }}>
-            Add a note or import iMessages to start the timeline
+            Send a video, add a note, or import iMessages to start the timeline
           </div>
         </div>
       ) : (
         <div>
           <div style={{
-            fontSize: '12px',
-            fontWeight: 600,
-            color: '#a0a0b0',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
             marginBottom: '16px',
           }}>
-            Activity Timeline — {activities.length} entr{activities.length === 1 ? 'y' : 'ies'}
+            <div style={{
+              fontSize: '12px',
+              fontWeight: 600,
+              color: '#a0a0b0',
+              textTransform: 'uppercase',
+              letterSpacing: '0.04em',
+            }}>
+              Activity Timeline — {activities.length} entr{activities.length === 1 ? 'y' : 'ies'}
+            </div>
+            {videoCount > 0 && (
+              <div style={{
+                fontSize: '11px', fontWeight: 600, padding: '2px 8px',
+                borderRadius: '10px', background: 'rgba(16,185,129,0.12)',
+                color: '#10b981',
+              }}>
+                {videoCount} video{videoCount !== 1 ? 's' : ''} sent
+              </div>
+            )}
           </div>
           {activities.map((activity, index) => (
             <ActivityItem

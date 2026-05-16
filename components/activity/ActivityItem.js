@@ -12,17 +12,64 @@ const sourceIcons = {
   heygen: IconVideo,
 };
 
+const dotColors = {
+  imessage: '#3b82f6',
+  manual: '#a0a0b0',
+  system: '#00e5ff',
+  video: '#10b981',
+  heygen: '#8b5cf6',
+};
+
+// Parse video content to render URLs as clickable links
+function renderContent(content, source) {
+  if (source !== 'video' && source !== 'heygen') {
+    return <span>{content}</span>;
+  }
+
+  // Split content into lines and render URLs as links
+  const lines = content.split('\n');
+  return lines.map((line, i) => {
+    // Match URLs in the line
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = line.split(urlRegex);
+
+    return (
+      <div key={i} style={{ marginBottom: i < lines.length - 1 ? '2px' : 0 }}>
+        {parts.map((part, j) => {
+          if (urlRegex.test(part)) {
+            // Reset regex lastIndex
+            urlRegex.lastIndex = 0;
+            return (
+              <a
+                key={j}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: source === 'heygen' ? '#8b5cf6' : '#10b981',
+                  textDecoration: 'none',
+                  borderBottom: `1px dashed ${source === 'heygen' ? '#8b5cf640' : '#10b98140'}`,
+                  wordBreak: 'break-all',
+                  transition: 'opacity 0.15s ease',
+                }}
+                onMouseOver={e => e.currentTarget.style.opacity = '0.8'}
+                onMouseOut={e => e.currentTarget.style.opacity = '1'}
+              >
+                {part}
+              </a>
+            );
+          }
+          return <span key={j}>{part}</span>;
+        })}
+      </div>
+    );
+  });
+}
+
 export default function ActivityItem({ activity, style: customStyle }) {
   const sourceConfig = ACTIVITY_SOURCES[activity.source] || ACTIVITY_SOURCES.manual;
   const IconComponent = sourceIcons[activity.source] || IconNote;
-
-  const dotColors = {
-    imessage: '#3b82f6',
-    manual: '#a0a0b0',
-    system: '#00e5ff',
-    video: '#10b981',
-    heygen: '#8b5cf6',
-  };
+  const isVideo = activity.source === 'video' || activity.source === 'heygen';
 
   return (
     <div
@@ -49,6 +96,7 @@ export default function ActivityItem({ activity, style: customStyle }) {
           background: dotColors[activity.source] || '#a0a0b0',
           marginTop: '4px',
           flexShrink: 0,
+          boxShadow: isVideo ? `0 0 6px ${dotColors[activity.source]}60` : 'none',
         }} />
         <div style={{
           width: '1px',
@@ -80,7 +128,7 @@ export default function ActivityItem({ activity, style: customStyle }) {
             fontSize: '11px',
             padding: '2px 6px',
             borderRadius: '4px',
-            background: 'transparent',
+            background: isVideo ? `${sourceConfig.color}15` : 'transparent',
             border: `1px solid ${sourceConfig.color}40`,
             color: sourceConfig.color,
             fontWeight: 500,
@@ -103,14 +151,16 @@ export default function ActivityItem({ activity, style: customStyle }) {
           fontSize: '14px',
           color: '#a0a0b0',
           lineHeight: 1.6,
-          background: '#0a0a0f',
+          background: isVideo
+            ? `linear-gradient(135deg, #0a0a0f 0%, ${activity.source === 'heygen' ? '#0d0a14' : '#0a0f0d'} 100%)`
+            : '#0a0a0f',
           padding: '12px 16px',
           borderRadius: '8px',
-          border: '1px solid #1c1c24',
+          border: `1px solid ${isVideo ? `${dotColors[activity.source]}25` : '#1c1c24'}`,
           whiteSpace: 'pre-wrap',
           wordBreak: 'break-word',
         }}>
-          {activity.content}
+          {renderContent(activity.content, activity.source)}
         </div>
       </div>
     </div>
