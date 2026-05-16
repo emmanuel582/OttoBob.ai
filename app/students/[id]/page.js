@@ -260,7 +260,7 @@ export default function StudentDetailPage({ params }) {
                 <span style={{ fontSize: '13px', fontWeight: 600, color: '#a0a0b0', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Activity Log</span>
               </div>
               <div style={{ padding: '16px 18px' }}>
-                <ActivityTimeline studentId={id} key={student.status} />
+                <ActivityTimeline studentId={id} studentStatus={student.status} key={student.status} />
               </div>
             </div>
           </div>

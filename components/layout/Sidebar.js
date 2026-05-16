@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { IconDashboard, IconUsers } from '@/components/ui/Icons';
+import { IconDashboard, IconUsers, IconVideo } from '@/components/ui/Icons';
 import { useSidebar } from '@/lib/contexts/SidebarContext';
 import { createClient } from '@/lib/supabase/client';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: <IconDashboard size={18} /> },
   { href: '/students', label: 'Students', icon: <IconUsers size={18} /> },
+  { href: '/videos', label: 'Videos', icon: <IconVideo size={18} /> },
 ];
 
 export default function Sidebar() {

@@ -2,12 +2,14 @@
 
 import { formatTimestamp } from '@/lib/utils';
 import { ACTIVITY_SOURCES } from '@/lib/constants';
-import { IconMessageCircle, IconNote, IconSettings } from '@/components/ui/Icons';
+import { IconMessageCircle, IconNote, IconSettings, IconVideo, IconPlay } from '@/components/ui/Icons';
 
 const sourceIcons = {
   imessage: IconMessageCircle,
   manual: IconNote,
   system: IconSettings,
+  video: IconPlay,
+  heygen: IconVideo,
 };
 
 export default function ActivityItem({ activity, style: customStyle }) {
@@ -18,6 +20,8 @@ export default function ActivityItem({ activity, style: customStyle }) {
     imessage: '#3b82f6',
     manual: '#a0a0b0',
     system: '#00e5ff',
+    video: '#10b981',
+    heygen: '#8b5cf6',
   };
 
   return (

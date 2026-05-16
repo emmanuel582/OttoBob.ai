@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.activity_logs (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     student_id UUID NOT NULL REFERENCES public.students(id) ON DELETE CASCADE,
     timestamp TIMESTAMPTZ DEFAULT NOW(),
-    source TEXT NOT NULL CHECK (source IN ('imessage', 'manual', 'system')),
+    source TEXT NOT NULL CHECK (source IN ('imessage', 'manual', 'system', 'video', 'heygen')),
     author TEXT,
     content TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()
@@ -137,3 +137,39 @@ CREATE POLICY "Authenticated users can delete avatars"
 ON storage.objects FOR DELETE 
 TO authenticated 
 USING (bucket_id = 'avatars');
+
+-- ============================================
+-- STORAGE: videos
+-- ============================================
+
+-- Create the bucket if it doesn't exist
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('videos', 'videos', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policies for videos bucket
+-- 1. Allow public read access
+DROP POLICY IF EXISTS "Video files are publicly accessible" ON storage.objects;
+CREATE POLICY "Video files are publicly accessible" 
+ON storage.objects FOR SELECT 
+USING (bucket_id = 'videos');
+
+-- 2. Allow authenticated users to upload
+DROP POLICY IF EXISTS "Authenticated users can upload videos" ON storage.objects;
+CREATE POLICY "Authenticated users can upload videos" 
+ON storage.objects FOR INSERT 
+TO authenticated 
+WITH CHECK (bucket_id = 'videos');
+
+-- 3. Allow authenticated users to update/delete their uploads
+DROP POLICY IF EXISTS "Authenticated users can update videos" ON storage.objects;
+CREATE POLICY "Authenticated users can update videos" 
+ON storage.objects FOR UPDATE 
+TO authenticated 
+USING (bucket_id = 'videos');
+
+DROP POLICY IF EXISTS "Authenticated users can delete videos" ON storage.objects;
+CREATE POLICY "Authenticated users can delete videos" 
+ON storage.objects FOR DELETE 
+TO authenticated 
+USING (bucket_id = 'videos');

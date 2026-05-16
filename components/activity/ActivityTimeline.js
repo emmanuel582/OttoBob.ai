@@ -5,9 +5,10 @@ import { createClient } from '@/lib/supabase/client';
 import ActivityItem from './ActivityItem';
 import AddNoteForm from './AddNoteForm';
 import ImportIMessageForm from './ImportIMessageForm';
+import SendVideoForm from './SendVideoForm';
 import { IconClipboard } from '@/components/ui/Icons';
 
-export default function ActivityTimeline({ studentId }) {
+export default function ActivityTimeline({ studentId, studentStatus }) {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createClient();
@@ -51,6 +52,9 @@ export default function ActivityTimeline({ studentId }) {
 
   return (
     <div>
+      {/* Send Video Form */}
+      <SendVideoForm studentId={studentId} studentStatus={studentStatus} onVideoSent={fetchActivities} />
+
       {/* Add Note Form */}
       <AddNoteForm studentId={studentId} onNoteAdded={fetchActivities} />
 
